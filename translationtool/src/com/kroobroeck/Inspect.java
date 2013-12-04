@@ -11,6 +11,7 @@ public class Inspect
 	public String value;
 	public int lineNumber;
 	public String group;
+	public Formatted formatted;
 
 	@Override
 	public String toString()
