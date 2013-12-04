@@ -98,7 +98,7 @@ public class Main
 			lineNumber++;
 
 			line = in.nextLine();
-			Pattern pattern = Pattern.compile( "<string name=\"(.*?)(_.*)\" formatted=\"false\">(.*)</string>" );
+			Pattern pattern = Pattern.compile( "<string name=\"(.*?)(_.*?)\".*?>(.*)</string>" );
 			Matcher matcher = pattern.matcher( line );
 
 			while ( matcher.find() )
