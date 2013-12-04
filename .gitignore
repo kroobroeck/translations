@@ -1,2 +1,5 @@
 # Local test files
 local/
+
+# Class Files
+*.class
