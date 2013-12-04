@@ -24,9 +24,12 @@ public class Main
 		scanTranslations( originMap, commandLineOptions.origin );
 		scanTranslations( localMap, commandLineOptions.local );
 
-		//Cross evaluation, check for errors
+		//Scan for wrong formatting of local file (%% or ||)
+		scanForWrongFormatting( localMap, commandLineOptions.local );
+
 		boolean hasError = false;
 
+		//Cross evaluation, check for errors
 		for ( String key : originMap.keySet() )
 		{
 			if ( originMap.get( key ).size() > 2 )
@@ -121,7 +124,7 @@ public class Main
 				inspect.name = matcher.group( 1 ) + matcher.group( 2 );
 				inspect.value = matcher.group( 4 );
 				inspect.line = line;
-				inspect.formatted =  matcher.group( 3 ).equals( "false" ) ? Formatted.FALSE:  matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED: Formatted.TRUE ;
+				inspect.formatted = matcher.group( 3 ).equals( "false" ) ? Formatted.FALSE : matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED : Formatted.TRUE;
 
 				List<Inspect> inspectList = null;
 				if ( map.containsKey( inspect.name ) )
@@ -160,5 +163,22 @@ public class Main
 
 		writer.println( "</resources>" );
 		writer.close();
+	}
+
+	private static void scanForWrongFormatting( HashMap<String, List<Inspect>> localMap, String local )
+	{
+		Pattern pattern = Pattern.compile( "(^%%(.*?)%%)|(^\\|\\|(.*?)\\|\\|)" );
+
+		for ( String key : localMap.keySet() )
+		{
+			Matcher matcher = pattern.matcher( (localMap.get( key ).get( 0 ).value) );
+
+			if ( !matcher.find() )
+			{
+				System.out.println( "File " + local );
+				System.out.println( "\tThe value of " + key + " has wrong formatting (no %% or || at beginning and/or end)" );
+				System.out.println( "\tLinenumber " + localMap.get( key ).get( 0 ).lineNumber + " in " + local + "\n" );
+			}
+		}
 	}
 }
