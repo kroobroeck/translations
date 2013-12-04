@@ -14,15 +14,18 @@ public class Main
 {
 	public static void main( String[] args ) throws Exception
 	{
+		//Parse commands
 		CommandLineOptions commandLineOptions = new CommandLineOptions();
 		new JCommander( commandLineOptions, args );
 
+		//Insert both files in hashmap
 		HashMap<String, List<Inspect>> valuesMap = new HashMap<String, List<Inspect>>();
 		HashMap<String, List<Inspect>> localizationMap = new HashMap<String, List<Inspect>>();
 
 		scanTranslations( valuesMap, commandLineOptions.origin );
 		scanTranslations( localizationMap, commandLineOptions.local );
 
+		//Cross evaluation, check for errors
 		boolean hasError = false;
 
 		for ( String key : valuesMap.keySet() )
@@ -73,9 +76,10 @@ public class Main
 			}
 		}
 
+		//If no errors occured and -format is set, middle is reformatted.
 		if ( !hasError && commandLineOptions.format )
 		{
-			System.out.println( "No errors found, this is the newly sorted localizations string.xml file:\n\n" );
+			System.out.println( "No errors found, the newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
 			sortLocalizations( localizationMap, commandLineOptions.local );
 		}
 	}

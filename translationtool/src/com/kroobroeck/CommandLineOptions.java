@@ -17,15 +17,16 @@ public class CommandLineOptions
 	@Parameter
 	private List<String> parameters = new ArrayList<String>();
 
-	@Parameter(names = {"-format" }, description = "Format the middle strings.xml file.")
+	@Parameter(names = {"-format", "-f" }, description = "Format the middle strings.xml file.")
 	public boolean format = false;
 
-	@Parameter(names = {"-origin"}, description = "The path to the original strings.xml file")
+	@Parameter(names = {"-origin", "-o"}, description = "The path to the original strings.xml file")
 	public String origin;
 
-	@Parameter(names = {"-local"}, description = "The path to the local strings.xml file")
+	@Parameter(names = {"-local", "-l"}, description = "The path to the local strings.xml file")
 	public String local;
 
-	@Parameter(names = {"-sync"}, description = "Sync the origin with the local file when certain tags aren't available in the local strings.xml")
+	//currently not supported
+	@Parameter(names = {"-sync","-s"}, description = "Sync the origin with the local file when certain tags aren't available in the local strings.xml")
 	public boolean sync = false;
 }
