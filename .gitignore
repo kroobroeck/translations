@@ -1,3 +1,10 @@
+# Project specifics
+/.idea/*/*
+/.idea/workspace.xml
+/.idea/uiDesigner.xml
+/.idea/WatcherTasks.xml
+
+
 # Local test files
 local/
 
