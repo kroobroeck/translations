@@ -18,7 +18,6 @@ public class Main
 		CommandLineOptions commandLineOptions = new CommandLineOptions();
 		new JCommander( commandLineOptions, args );
 
-		//Insert both files in hashmap
 		HashMap<String, List<Inspect>> valuesMap = new HashMap<String, List<Inspect>>();
 		HashMap<String, List<Inspect>> localizationMap = new HashMap<String, List<Inspect>>();
 
@@ -49,6 +48,13 @@ public class Main
 				System.out.println( "File " + commandLineOptions.local );
 				System.out.println( "\tDoesn't contain " + key );
 				System.out.println( "\tLinenumber " + valuesMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.origin );
+
+				if ( commandLineOptions.sync )
+				{
+					//If sync is on, write to localizations file
+					localizationMap.put( key, valuesMap.get( key ) );
+					localizationMap.get( key ).get( 0 ).value = "%%" + localizationMap.get( key ).get( 0 ).value + "%%";
+				}
 			}
 		}
 
@@ -80,6 +86,10 @@ public class Main
 		if ( !hasError && commandLineOptions.format )
 		{
 			System.out.println( "No errors found, the newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
+			sortLocalizations( localizationMap, commandLineOptions.local );
+		}else if( hasError && commandLineOptions.sync )
+		{
+			System.out.println( "Errors found, synced localization with orginal, newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
 			sortLocalizations( localizationMap, commandLineOptions.local );
 		}
 	}
@@ -142,7 +152,7 @@ public class Main
 				previousPrefix = sortedMap.get( key ).get( 0 ).group;
 				writer.println( "\n\t<!-- " + previousPrefix.toUpperCase() + " -->" );
 			}
-			writer.println( "\t" + sortedMap.get( key ).get( 0 ).line.trim() );
+			writer.println( "\t<string name=\"" + key + "\" formatted=\"false\">" +sortedMap.get( key ).get( 0 ).value + "</string>" );
 
 		}
 
