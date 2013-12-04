@@ -18,67 +18,69 @@ public class Main
 		CommandLineOptions commandLineOptions = new CommandLineOptions();
 		new JCommander( commandLineOptions, args );
 
-		HashMap<String, List<Inspect>> valuesMap = new HashMap<String, List<Inspect>>();
-		HashMap<String, List<Inspect>> localizationMap = new HashMap<String, List<Inspect>>();
+		HashMap<String, List<Inspect>> originMap = new HashMap<String, List<Inspect>>();
+		HashMap<String, List<Inspect>> localMap = new HashMap<String, List<Inspect>>();
 
-		scanTranslations( valuesMap, commandLineOptions.origin );
-		scanTranslations( localizationMap, commandLineOptions.local );
+		scanTranslations( originMap, commandLineOptions.origin );
+		scanTranslations( localMap, commandLineOptions.local );
 
 		//Cross evaluation, check for errors
 		boolean hasError = false;
 
-		for ( String key : valuesMap.keySet() )
+		for ( String key : originMap.keySet() )
 		{
-			if ( valuesMap.get( key ).size() > 2 )
+			if ( originMap.get( key ).size() > 2 )
 			{
 				hasError = true;
 
 				System.out.println( "File " + commandLineOptions.origin );
-				System.out.println( "\tContains " + valuesMap.get( key ).size() + " name " + key );
+				System.out.println( "\tContains " + originMap.get( key ).size() + " name " + key );
 				System.out.println( "\tDetails:" );
-				for ( Inspect inspect : valuesMap.get( key ) )
+				for ( Inspect inspect : originMap.get( key ) )
 				{
 					System.out.println( "\t\t" + inspect.toString() );
 				}
+				System.out.print( "\n" );
 			}
-			if ( !localizationMap.containsKey( key ) )
+			if ( !localMap.containsKey( key ) )
 			{
 				hasError = true;
 
 				System.out.println( "File " + commandLineOptions.local );
 				System.out.println( "\tDoesn't contain " + key );
-				System.out.println( "\tLinenumber " + valuesMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.origin );
+				System.out.println( "\tLinenumber " + originMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.origin + "\n" );
 
 				if ( commandLineOptions.sync )
 				{
 					//If sync is on, write to localizations file
-					localizationMap.put( key, valuesMap.get( key ) );
-					localizationMap.get( key ).get( 0 ).value = "%%" + localizationMap.get( key ).get( 0 ).value + "%%";
+					localMap.put( key, originMap.get( key ) );
+					localMap.get( key ).get( 0 ).value = "%%" + localMap.get( key ).get( 0 ).value + "%%";
 				}
 			}
 		}
 
-		for ( String key : localizationMap.keySet() )
+		for ( String key : localMap.keySet() )
 		{
-			if ( localizationMap.get( key ).size() > 2 )
+			if ( localMap.get( key ).size() > 2 )
 			{
 				hasError = true;
 
 				System.out.println( "File " + commandLineOptions.local );
-				System.out.println( "\tContains " + localizationMap.get( key ).size() + " name " + key );
+				System.out.println( "\tContains " + localMap.get( key ).size() + " name " + key );
 				System.out.println( "\tDetails:" );
-				for ( Inspect inspect : localizationMap.get( key ) )
+				for ( Inspect inspect : localMap.get( key ) )
 				{
 					System.out.println( "\t\t" + inspect.toString() );
 				}
+				System.out.print( "\n" );
 			}
-			if ( !valuesMap.containsKey( key ) )
+			if ( !originMap.containsKey( key ) )
 			{
 				hasError = true;
 
 				System.out.println( "File " + commandLineOptions.origin );
 				System.out.println( "\tDoesn't contain " + key );
-				System.out.println( "\tLinenumber " + localizationMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.local );
+				System.out.println( "\tLinenumber " + localMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.local + "\n" );
 			}
 		}
 
@@ -86,11 +88,11 @@ public class Main
 		if ( !hasError && commandLineOptions.format )
 		{
 			System.out.println( "No errors found, the newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
-			sortLocalizations( localizationMap, commandLineOptions.local );
-		}else if( hasError && commandLineOptions.sync )
+			sortLocalizations( localMap, commandLineOptions.local );
+		} else if ( hasError && commandLineOptions.sync )
 		{
 			System.out.println( "Errors found, synced localization with orginal, newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
-			sortLocalizations( localizationMap, commandLineOptions.local );
+			sortLocalizations( localMap, commandLineOptions.local );
 		}
 	}
 
@@ -152,8 +154,7 @@ public class Main
 				previousPrefix = sortedMap.get( key ).get( 0 ).group;
 				writer.println( "\n\t<!-- " + previousPrefix.toUpperCase() + " -->" );
 			}
-			writer.println( "\t<string name=\"" + key + "\" formatted=\"false\">" +sortedMap.get( key ).get( 0 ).value + "</string>" );
-
+			writer.println( "\t<string name=\"" + key + "\" formatted=\"false\">" + sortedMap.get( key ).get( 0 ).value + "</string>" );
 		}
 
 		writer.println( "</resources>" );
