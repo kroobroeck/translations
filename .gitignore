@@ -1,6 +1,7 @@
 # Project specifics
 /.idea/*/*
 /.idea/workspace.xml
+/.idea/uiDesigner.xml
 
 # Local test files
 local/
