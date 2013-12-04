@@ -15,6 +15,6 @@ public class Inspect
 	@Override
 	public String toString()
 	{
-		return 	"On Linenumber: " + lineNumber + " " + line;
+		return "On Linenumber: " + lineNumber + " " + line;
 	}
 }
