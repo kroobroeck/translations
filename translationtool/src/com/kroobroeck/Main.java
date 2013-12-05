@@ -27,14 +27,15 @@ public class Main
 		//Scan for wrong formatting of local file (%% or ||)
 		scanForWrongFormatting( localMap, commandLineOptions.local );
 
-		boolean hasError = false;
+		boolean localHasError = false;
+		boolean originHasError = false;
 
 		//Cross evaluation, check for errors
 		for ( String key : originMap.keySet() )
 		{
 			if ( originMap.get( key ).size() > 2 )
 			{
-				hasError = true;
+				localHasError = true;
 
 				System.out.println( "File " + commandLineOptions.origin );
 				System.out.println( "\tContains " + originMap.get( key ).size() + " name " + key );
@@ -47,7 +48,7 @@ public class Main
 			}
 			if ( !localMap.containsKey( key ) )
 			{
-				hasError = true;
+				localHasError = true;
 
 				System.out.println( "File " + commandLineOptions.local );
 				System.out.println( "\tDoesn't contain " + key );
@@ -66,7 +67,7 @@ public class Main
 		{
 			if ( localMap.get( key ).size() > 2 )
 			{
-				hasError = true;
+				originHasError = true;
 
 				System.out.println( "File " + commandLineOptions.local );
 				System.out.println( "\tContains " + localMap.get( key ).size() + " name " + key );
@@ -79,22 +80,28 @@ public class Main
 			}
 			if ( !originMap.containsKey( key ) )
 			{
-				hasError = true;
+				originHasError = true;
 
 				System.out.println( "File " + commandLineOptions.origin );
 				System.out.println( "\tDoesn't contain " + key );
 				System.out.println( "\tLinenumber " + localMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.local + "\n" );
 			}
+			else if ( originMap.get(key).get( 0 ).formatted != localMap.get(key).get( 0 ).formatted )
+			{
+				System.out.println( "File " + commandLineOptions.origin );
+				System.out.println( "\tKey " + key + " doesn't match the formatted value"  + localMap.get(key).get( 0 ).formatted.getTag() + "\n\tin " + commandLineOptions.local );
+				System.out.println( "\tLinenumber " + localMap.get( key ).get( 0 ).lineNumber + " in " + commandLineOptions.local + "\n" );
+			}
 		}
 
-		//If no errors occured and -format is set, middle is reformatted.
-		if ( !hasError && commandLineOptions.format )
+		//If no errors occured and --format is set, middle is reformatted.
+		if ( !localHasError && !originHasError && commandLineOptions.format )
 		{
-			System.out.println( "No errors found, the newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
+			System.out.println( "The newly sorted localizations file can be found " + commandLineOptions.local + "\n" );
 			sortLocalizations( localMap, commandLineOptions.local );
-		} else if ( hasError && commandLineOptions.sync )
+		} else if ( localHasError && commandLineOptions.sync )
 		{
-			System.out.println( "Errors found, synced localization with orginal, newly sorted localizations file can be found " + commandLineOptions.local + "\n\n" );
+			System.out.println( "Synced localization with orginal, newly sorted localizations file can be found " + commandLineOptions.local + "\n" );
 			sortLocalizations( localMap, commandLineOptions.local );
 		}
 	}
@@ -124,7 +131,7 @@ public class Main
 				inspect.name = matcher.group( 1 ) + matcher.group( 2 );
 				inspect.value = matcher.group( 4 );
 				inspect.line = line;
-				inspect.formatted = matcher.group( 3 ).equals( "false" ) ? Formatted.FALSE : matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED : Formatted.TRUE;
+				inspect.formatted = matcher.group( 3 ).contains("false" ) ? Formatted.FALSE : matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED : Formatted.TRUE;
 
 				List<Inspect> inspectList = null;
 				if ( map.containsKey( inspect.name ) )
