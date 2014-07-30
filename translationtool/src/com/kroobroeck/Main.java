@@ -53,7 +53,7 @@ public class Main
 				inspect.name = matcher.group( 1 ) + matcher.group( 2 );
 				inspect.value = matcher.group( 4 );
 				inspect.line = line;
-				inspect.formatted = matcher.group( 3 ).contains( "false" ) ? Formatted.FALSE : matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED : Formatted.TRUE;
+				//inspect.formatted = matcher.group( 3 ).contains( "false" ) ? Formatted.FALSE : matcher.group( 3 ).equals( "" ) ? Formatted.UNDEFINED : Formatted.TRUE;
 
 				List<Inspect> inspectList = null;
 				if ( map.containsKey( inspect.name ) )
@@ -87,7 +87,7 @@ public class Main
 				previousPrefix = sortedMap.get( key ).get( 0 ).group;
 				writer.println( "\n\t<!-- " + previousPrefix.toUpperCase() + " -->" );
 			}
-			writer.println( "\t<string name=\"" + key + "\"" + sortedMap.get( key ).get( 0 ).formatted.getTag() + ">" + sortedMap.get( key ).get( 0 ).value + "</string>" );
+			writer.println( "\t<string name=\"" + key + "\"" + /*sortedMap.get( key ).get( 0 ).formatted.getTag() +*/ ">" + sortedMap.get( key ).get( 0 ).value + "</string>" );
 		}
 
 		writer.println( "</resources>" );
