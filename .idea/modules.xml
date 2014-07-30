@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jcommander/jcommander.iml" filepath="$PROJECT_DIR$/jcommander/jcommander.iml" />
-      <module fileurl="file://$PROJECT_DIR$/translations.iml" filepath="$PROJECT_DIR$/translations.iml" />
       <module fileurl="file://$PROJECT_DIR$/translationtool/translationtool.iml" filepath="$PROJECT_DIR$/translationtool/translationtool.iml" />
     </modules>
   </component>
